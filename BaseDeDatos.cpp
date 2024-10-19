@@ -2,61 +2,129 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <stdexcept>
+#include <algorithm>
+
+// Definición de la función auxiliar para limpiar y convertir los valores de goles
+int BaseDeDatos::convertirGoles(const std::string& str) {
+    std::string limpio;
+    std::remove_copy_if(str.begin(), str.end(), std::back_inserter(limpio), [](char c) { return !std::isdigit(c); });
+    return std::stoi(limpio);
+}
 
 BaseDeDatos::BaseDeDatos() : cargado(false) {}
 
 bool BaseDeDatos::cargarArchivo(const std::string& nombreArchivo) {
     std::string rutaArchivo = "/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/Recursos/" + nombreArchivo;
+    std::cout << "Intentando abrir el archivo: " << rutaArchivo << std::endl;
     std::ifstream archivo(rutaArchivo);
     if (!archivo.is_open()) {
         std::cerr << "No se pudo abrir el archivo: " << rutaArchivo << std::endl;
         return false;
     }
 
-    std::string linea;
-    std::getline(archivo, linea); // Leer la cabecera
+    try {
+        std::string linea;
+        std::getline(archivo, linea); // Leer la cabecera
+        std::cout << "Cabecera leída: " << linea << std::endl;
 
-    while (std::getline(archivo, linea)) {
-        std::stringstream ss(linea);
-        std::string jornada, fecha, equipoLocal, equipoVisitante, competicion;
-        int golesLocal, golesVisitante;
+        int lineaNum = 1;
+        while (std::getline(archivo, linea)) {
+            lineaNum++;
+            std::cout << "Procesando línea " << lineaNum << ": " << linea << std::endl;
 
-        std::getline(ss, jornada, ',');
-        std::getline(ss, fecha, ',');
-        std::getline(ss, equipoLocal, ',');
-        ss >> golesLocal;
-        ss.ignore(1);
-        ss >> golesVisitante;
-        ss.ignore(1);
-        std::getline(ss, equipoVisitante, ',');
-        std::getline(ss, competicion, ',');
+            std::istringstream ss(linea);
+            std::string campo;
+            std::vector<std::string> campos;
 
-        Competicion* competicionObj = buscarCompeticion(competicion);
-        if (!competicionObj) {
-            competicionObj = new Competicion(competicion);
-            agregarCompeticion(competicionObj);
+            while (std::getline(ss, campo, ',')) {
+                campos.push_back(campo);
+            }
+
+            if (campos.size() < 10) {
+                std::cerr << "Error en línea " << lineaNum << ": número incorrecto de campos." << std::endl;
+                continue;
+            }
+
+            std::string jornada = campos[0];
+            std::string fecha = campos[1];
+            std::string equipoLocal = campos[2];
+            int golesLocal, golesVisitante;
+
+            try {
+                golesLocal = convertirGoles(campos[3]);
+                golesVisitante = convertirGoles(campos[4]);
+            } catch (const std::invalid_argument& e) {
+                std::cerr << "Error en línea " << lineaNum << " al convertir goles a entero: " << e.what() << std::endl;
+                continue;
+            } catch (const std::out_of_range& e) {
+                std::cerr << "Error en línea " << lineaNum << " al convertir goles a entero: " << e.what() << std::endl;
+                continue;
+            }
+
+            std::string equipoVisitante = campos[5];
+            std::string competicion = campos[6];
+
+            Competicion* competicionObj = nullptr;
+            try {
+                competicionObj = buscarCompeticion(competicion);
+                if (!competicionObj) {
+                    competicionObj = new Competicion(competicion);
+                    agregarCompeticion(competicionObj);
+                    std::cout << "Nueva competición creada: " << competicion << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error al buscar/crear competición en línea " << lineaNum << ": " << e.what() << std::endl;
+                continue;
+            }
+
+            Equipo* equipoLocalObj = nullptr;
+            try {
+                equipoLocalObj = competicionObj->buscarEquipo(equipoLocal);
+                if (!equipoLocalObj) {
+                    equipoLocalObj = new Equipo(equipoLocal);
+                    competicionObj->agregarEquipo(equipoLocalObj);
+                    std::cout << "Nuevo equipo local creado: " << equipoLocal << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error al buscar/crear equipo local en línea " << lineaNum << ": " << e.what() << std::endl;
+                continue;
+            }
+
+            Equipo* equipoVisitanteObj = nullptr;
+            try {
+                equipoVisitanteObj = competicionObj->buscarEquipo(equipoVisitante);
+                if (!equipoVisitanteObj) {
+                    equipoVisitanteObj = new Equipo(equipoVisitante);
+                    competicionObj->agregarEquipo(equipoVisitanteObj);
+                    std::cout << "Nuevo equipo visitante creado: " << equipoVisitante << std::endl;
+                }
+            } catch (const std::exception& e) {
+                std::cerr << "Error al buscar/crear equipo visitante en línea " << lineaNum << ": " << e.what() << std::endl;
+                continue;
+            }
+
+            try {
+                equipoLocalObj->agregarPartido(fecha, equipoVisitante, golesLocal, golesVisitante, competicion);
+                equipoVisitanteObj->agregarPartido(fecha, equipoLocal, golesVisitante, golesLocal, competicion);
+                std::cout << "Partido agregado: " << fecha << ", " << equipoLocal << " vs " << equipoVisitante << ", " << golesLocal << "-" << golesVisitante << std::endl;
+            } catch (const std::exception& e) {
+                std::cerr << "Error al agregar partido en línea " << lineaNum << ": " << e.what() << std::endl;
+                continue;
+            }
         }
 
-        Equipo* equipoLocalObj = competicionObj->buscarEquipo(equipoLocal);
-        if (!equipoLocalObj) {
-            equipoLocalObj = new Equipo(equipoLocal);
-            competicionObj->agregarEquipo(equipoLocalObj);
-        }
-
-        Equipo* equipoVisitanteObj = competicionObj->buscarEquipo(equipoVisitante);
-        if (!equipoVisitanteObj) {
-            equipoVisitanteObj = new Equipo(equipoVisitante);
-            competicionObj->agregarEquipo(equipoVisitanteObj);
-        }
-
-        equipoLocalObj->agregarPartido(fecha, equipoVisitante, golesLocal, golesVisitante, competicion);
-        equipoVisitanteObj->agregarPartido(fecha, equipoLocal, golesVisitante, golesLocal, competicion);
+        archivo.close();
+        cargado = true;
+        std::cout << "Archivo cargado exitosamente: " << rutaArchivo << std::endl;
+        return true;
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada al procesar el archivo: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada al procesar el archivo." << std::endl;
     }
 
-    archivo.close();
-    cargado = true;
-    std::cout << "Archivo cargado exitosamente: " << rutaArchivo << std::endl;
-    return true;
+    return false;
 }
 
 bool BaseDeDatos::estaCargado() const {

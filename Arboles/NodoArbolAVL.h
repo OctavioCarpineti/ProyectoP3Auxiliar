@@ -1,17 +1,9 @@
-//
-// Created by Octavio Carpineti on 17/10/2024.
-//
-
-#ifndef PROYECTO_NODOARBOLAVL_H
-#define PROYECTO_NODOARBOLAVL_H
-
-
 #ifndef U05_ARBOL_ARBOL_NODOARBOLAVL_H_
 #define U05_ARBOL_ARBOL_NODOARBOLAVL_H_
 
-#include <iostream> // Para std::cout y std::endl
-#include <string>   // Para std::string
+#include <string.h>
 using namespace std;
+#include "iostream"
 
 template <class T>
 class NodoArbolAVL
@@ -73,7 +65,7 @@ public:
     void setHeight(int h){
         height = h;
     }
-/*
+
     void print(bool esDerecho, string identacion) {
         if (right != NULL) {
             right->print(true, identacion + (esDerecho ? "     " : "|    "));
@@ -90,19 +82,7 @@ public:
             left->print(false, identacion + (esDerecho ? "|    " : "     "));
         }
     }
-*/
-    void print(bool esDerecho, std::string identacion) {
-        if (esDerecho) {
-            std::cout << identacion << " /";
-            identacion += "  ";
-        } else {
-            std::cout << identacion << " \\";
-            identacion += "  ";
-        }
-        std::cout << "-- " << data << std::endl;
-    }
 
 };
 
 #endif // U05_ARBOL_ARBOL_NODOARBOLAVL_H_
-#endif //PROYECTO_NODOARBOLAVL_H

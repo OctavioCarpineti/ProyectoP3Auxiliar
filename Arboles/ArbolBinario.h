@@ -1,10 +1,3 @@
-//
-// Created by Octavio Carpineti on 17/10/2024.
-//
-
-#ifndef PROYECTO_ARBOLBINARIO_H
-#define PROYECTO_ARBOLBINARIO_H
-
 #ifndef U05_ARBOL_ARBOL_ARBOLBINARIO_H_
 #define U05_ARBOL_ARBOL_ARBOLBINARIO_H_
 
@@ -310,5 +303,3 @@ void ArbolBinario<T>::print()
 }
 
 #endif // U05_ARBOL_ARBOL_ARBOLBINARIO_H_
-
-#endif //PROYECTO_ARBOLBINARIO_H

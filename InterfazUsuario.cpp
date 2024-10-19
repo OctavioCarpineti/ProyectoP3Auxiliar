@@ -3,7 +3,6 @@
 #include "GestorConsultas.h"
 #include "BaseDeDatos.h"
 
-// Constructor de la clase InterfazUsuario
 InterfazUsuario::InterfazUsuario(GestorConsultas* gestorConsultas, BaseDeDatos* baseDeDatos)
     : gestorConsultas(gestorConsultas), baseDeDatos(baseDeDatos) {}
 
@@ -18,13 +17,19 @@ void InterfazUsuario::mostrarMenuInicial() {
         int opcion;
         std::cin >> opcion;
 
-        switch (opcion) {
-            case 1: mostrarMenuPrincipal(); break;
-            case 2:
-                std::cout << "Funcionalidad de modificación aún no implementada.\n";
-                break;
-            case 3: std::cout << "Saliendo del programa...\n"; return;
-            default: std::cout << "Opción no válida. Intente de nuevo.\n";
+        try {
+            switch (opcion) {
+                case 1: mostrarMenuPrincipal(); break;
+                case 2:
+                    std::cout << "Funcionalidad de modificación aún no implementada.\n";
+                    break;
+                case 3: std::cout << "Saliendo del programa...\n"; return;
+                default: std::cout << "Opción no válida. Intente de nuevo.\n";
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Excepción capturada: " << e.what() << std::endl;
+        } catch (...) {
+            std::cerr << "Excepción desconocida capturada." << std::endl;
         }
     }
 }
@@ -36,7 +41,13 @@ void InterfazUsuario::consultarResultadosEquipo() {
     std::cout << "Ingrese el nombre de la competición: ";
     std::cin >> nombreCompeticion;
 
-    gestorConsultas->consultarResultadosEquipo(nombreEquipo, nombreCompeticion);
+    try {
+        gestorConsultas->consultarResultadosEquipo(nombreEquipo, nombreCompeticion);
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
 void InterfazUsuario::mostrarMenuPrincipal() {
@@ -55,16 +66,22 @@ void InterfazUsuario::mostrarMenuPrincipal() {
         int opcion;
         std::cin >> opcion;
 
-        switch (opcion) {
-            case 1: buscarPorCompeticion(); break;
-            case 2: buscarPorEquipo(); break;
-            case 3: buscarPorTemporada(); break;
-            case 4: buscarPorFecha(); break;
-            case 5: mostrarEstadisticasGenerales(); break;
-            case 6: mostrarPartidosDestacados(); break;
-            case 7: mostrarClasificaciones(); break;
-            case 8: std::cout << "Saliendo del programa...\n"; return;
-            default: std::cout << "Opción no válida. Intente de nuevo.\n";
+        try {
+            switch (opcion) {
+                case 1: buscarPorCompeticion(); break;
+                case 2: buscarPorEquipo(); break;
+                case 3: buscarPorTemporada(); break;
+                case 4: buscarPorFecha(); break;
+                case 5: mostrarEstadisticasGenerales(); break;
+                case 6: mostrarPartidosDestacados(); break;
+                case 7: mostrarClasificaciones(); break;
+                case 8: std::cout << "Saliendo del programa...\n"; return;
+                default: std::cout << "Opción no válida. Intente de nuevo.\n";
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Excepción capturada: " << e.what() << std::endl;
+        } catch (...) {
+            std::cerr << "Excepción desconocida capturada." << std::endl;
         }
     }
 }
@@ -76,12 +93,17 @@ void InterfazUsuario::buscarPorCompeticion() {
     int opcionCompeticion;
     std::cin >> opcionCompeticion;
 
-    // Llamada al gestor para obtener y mostrar los datos de la competición seleccionada
-    std::string nombreCompeticion = obtenerNombreCompeticion(opcionCompeticion);
-    if (!nombreCompeticion.empty()) {
-        gestorConsultas->obtenerDatosCompeticion(nombreCompeticion);
-    } else {
-        std::cout << "Opción no válida. Intente de nuevo.\n";
+    try {
+        std::string nombreCompeticion = obtenerNombreCompeticion(opcionCompeticion);
+        if (!nombreCompeticion.empty()) {
+            gestorConsultas->obtenerDatosCompeticion(nombreCompeticion);
+        } else {
+            std::cout << "Opción no válida. Intente de nuevo.\n";
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
     }
 }
 
@@ -92,7 +114,13 @@ void InterfazUsuario::buscarPorEquipo() {
     int opcionEquipo;
     std::cin >> opcionEquipo;
 
-    // Llamada al gestor para obtener y mostrar los datos del equipo seleccionado
+    try {
+        // Llamada al gestor para obtener y mostrar los datos del equipo seleccionado
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
 void InterfazUsuario::buscarPorTemporada() {
@@ -102,34 +130,63 @@ void InterfazUsuario::buscarPorTemporada() {
     int opcionTemporada;
     std::cin >> opcionTemporada;
 
-    // Llamada al gestor para obtener y mostrar los datos de la temporada seleccionada
+    try {
+        // Llamada al gestor para obtener y mostrar los datos de la temporada seleccionada
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
 void InterfazUsuario::buscarPorFecha() {
     std::cout << "\n----- Búsqueda por Fecha -----\n";
     std::string fecha = solicitarFecha();
 
-    // Llamada al gestor para obtener y mostrar los partidos en la fecha especificada
+    try {
+        // Llamada al gestor para obtener y mostrar los partidos en la fecha especificada
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
 void InterfazUsuario::mostrarEstadisticasGenerales() {
     std::cout << "\n----- Estadísticas Generales -----\n";
-    // Implementar lógica para mostrar estadísticas generales
-    // Por ejemplo, total de goles, promedio de goles por partido, etc.
+    try {
+        // Implementar lógica para mostrar estadísticas generales
+        // Por ejemplo, total de goles, promedio de goles por partido, etc.
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
 void InterfazUsuario::mostrarPartidosDestacados() {
     std::cout << "\n----- Partidos Destacados -----\n";
-    // Implementar lógica para mostrar partidos con más goles o resultados sorprendentes
+    try {
+        // Implementar lógica para mostrar partidos con más goles o resultados sorprendentes
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
 void InterfazUsuario::mostrarClasificaciones() {
     std::cout << "\n----- Clasificaciones -----\n";
-    // Implementar lógica para mostrar clasificaciones
-    // Por ejemplo, tabla de posiciones de equipos en una competición
+    try {
+        // Implementar lógica para mostrar clasificaciones
+        // Por ejemplo, tabla de posiciones de equipos en una competición
+    } catch (const std::exception& e) {
+        std::cerr << "Excepción capturada: " << e.what() << std::endl;
+    } catch (...) {
+        std::cerr << "Excepción desconocida capturada." << std::endl;
+    }
 }
 
-// Implementaciones de las funciones auxiliares
 void InterfazUsuario::mostrarCompeticiones() {
     std::cout << "Competiciones disponibles:\n";
     std::cout << "1. Champions League\n2. LALIGA\n3. Premier League\n4. Bundesliga\n";

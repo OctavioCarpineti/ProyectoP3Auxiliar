@@ -2,18 +2,9 @@
 #define PROYECTO_INTERFAZUSUARIO_H
 
 #include "GestorConsultas.h"
-#pragma once
-#include "BaseDeDatos.h"
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Arboles/NodoArbol.h"
-#include "Arboles/NodoArbolAVL.h"
-#include "Arboles/ArbolBinario.h"
-#include "Arboles/ArbolBinarioAVL.h"
-#include "Listas/Lista.h"
-#include "Listas/ListaDoble.h"
-#include "Listas/Nodo.h"
 
 class InterfazUsuario {
 private:
@@ -39,7 +30,7 @@ public:
     void mostrarEquipos();
     void mostrarTemporadas();
     std::string solicitarFecha();
-    std::string obtenerNombreCompeticion(int opcion);  // Nueva función
+    std::string obtenerNombreCompeticion(int opcion);
 };
 
 #endif //PROYECTO_INTERFAZUSUARIO_H

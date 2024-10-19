@@ -3,13 +3,6 @@
 
 #include "BaseDeDatos.h"
 #include <string>
-#include "Arboles/NodoArbol.h"
-#include "Arboles/NodoArbolAVL.h"
-#include "Arboles/ArbolBinario.h"
-#include "Arboles/ArbolBinarioAVL.h"
-#include "Listas/Lista.h"
-#include "Listas/ListaDoble.h"
-#include "Listas/Nodo.h"
 
 class GestorConsultas {
 private:

@@ -5,13 +5,6 @@
 #include <vector>
 #include "Equipo.h"
 #include "Partido.h"
-#include "Arboles/NodoArbol.h"
-#include "Arboles/NodoArbolAVL.h"
-#include "Arboles/ArbolBinario.h"
-#include "Arboles/ArbolBinarioAVL.h"
-#include "Listas/Lista.h"
-#include "Listas/ListaDoble.h"
-#include "Listas/Nodo.h"
 
 class Competicion {
 private:

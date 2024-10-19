@@ -1,15 +1,8 @@
-//
-// Created by Octavio Carpineti on 17/10/2024.
-//
-
-#ifndef PROYECTO_NODOARBOL_H
-#define PROYECTO_NODOARBOL_H
-
 #ifndef U05_ARBOL_ARBOL_NODOARBOL_H_
 #define U05_ARBOL_ARBOL_NODOARBOL_H_
 
-#include "iostream"
 #include <string.h>
+#include "iostream"
 using namespace std;
 
 template <class T>
@@ -20,8 +13,6 @@ private:
     NodoArbol *left, *right;
 
 public:
-
-
     NodoArbol()
     {
         left = nullptr;
@@ -84,5 +75,3 @@ public:
 };
 
 #endif // U05_ARBOL_ARBOL_NODOARBOL_H_
-
-#endif //PROYECTO_NODOARBOL_H
