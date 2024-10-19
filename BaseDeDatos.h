@@ -1,12 +1,15 @@
 #ifndef BASEDEDATOS_H
 #define BASEDEDATOS_H
-#include "Competicion.h"
+
 #include <string>
 #include <vector>
+#include <map>
+#include "Competicion.h"
 
 class BaseDeDatos {
 private:
     bool cargado;
+    std::map<std::string, Competicion*> competiciones; // Mapa para almacenar competiciones
 
     // Función auxiliar para limpiar y convertir los valores de goles
     static int convertirGoles(const std::string& str);

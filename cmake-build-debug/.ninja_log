@@ -96,3 +96,8 @@
 7	264	1729379980610851505	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
 7	267	1729379980614667806	CMakeFiles/Proyecto.dir/GestorConsultas.cpp.o	d4e85f221eb06f46
 8	270	1729379980617517897	CMakeFiles/Proyecto.dir/InterfazUsuario.cpp.o	5c13106ab77ea3f9
+6	300	1729380692565916820	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
+6	304	1729380692569992632	CMakeFiles/Proyecto.dir/GestorConsultas.cpp.o	d4e85f221eb06f46
+6	306	1729380692571556098	CMakeFiles/Proyecto.dir/InterfazUsuario.cpp.o	5c13106ab77ea3f9
+6	415	1729380692680349756	CMakeFiles/Proyecto.dir/BaseDeDatos.cpp.o	9cc28894ff2c323b
+415	458	1729380692723732677	Proyecto	d0b08f206e654567

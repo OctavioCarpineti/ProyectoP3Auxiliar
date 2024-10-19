@@ -136,19 +136,21 @@ void BaseDeDatos::cargarDatos(const std::string& nombreArchivo) {
 }
 
 Competicion* BaseDeDatos::buscarCompeticion(const std::string& nombre) {
-    Competicion tempCompeticion(nombre);
-    Competicion* competicion = competiciones.search(&tempCompeticion);
-    return competicion;
+    auto it = competiciones.find(nombre);
+    if (it != competiciones.end()) {
+        return it->second;
+    }
+    return nullptr;
 }
 
 void BaseDeDatos::agregarCompeticion(Competicion* competicion) {
-    competiciones.put(competicion);
+    competiciones[competicion->getNombre()] = competicion;
 }
 
 void BaseDeDatos::eliminarCompeticion(const std::string& nombre) {
-    Competicion tempCompeticion(nombre);
-    Competicion* competicion = competiciones.search(&tempCompeticion);
-    if (competicion) {
-        competiciones.remove(competicion);
+    auto it = competiciones.find(nombre);
+    if (it != competiciones.end()) {
+        delete it->second;
+        competiciones.erase(it);
     }
 }
