@@ -1,0 +1,20 @@
+# ninja log v5
+2	254	1729298358739550667	CMakeFiles/Proyecto.dir/Equipo.cpp.o	ee31ac671d1e64ad
+2	275	1729298358761065343	CMakeFiles/Proyecto.dir/Competicion.cpp.o	95a502b0d997c2e4
+1	282	1729298358767836263	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
+6	278	1729298443456176058	CMakeFiles/Proyecto.dir/Competicion.cpp.o	95a502b0d997c2e4
+6	292	1729298443470855388	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
+6	300	1729298443478542450	CMakeFiles/Proyecto.dir/Equipo.cpp.o	ee31ac671d1e64ad
+6	197	1729298607276600513	CMakeFiles/Proyecto.dir/Partido.cpp.o	8048de352a3632f7
+6	357	1729298937710834465	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
+7	359	1729298937710223505	CMakeFiles/Proyecto.dir/GestorConsultas.cpp.o	d4e85f221eb06f46
+7	360	1729298937710266130	CMakeFiles/Proyecto.dir/InterfazUsuario.cpp.o	5c13106ab77ea3f9
+7	271	1729299119531582464	CMakeFiles/Proyecto.dir/GestorConsultas.cpp.o	d4e85f221eb06f46
+7	272	1729299119532491716	CMakeFiles/Proyecto.dir/InterfazUsuario.cpp.o	5c13106ab77ea3f9
+7	273	1729299119533129302	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
+5	310	1729299184144425805	CMakeFiles/Proyecto.dir/BaseDeDatos.cpp.o	9cc28894ff2c323b
+8	269	1729301421153067991	CMakeFiles/Proyecto.dir/GestorConsultas.cpp.o	d4e85f221eb06f46
+8	271	1729301421155354213	CMakeFiles/Proyecto.dir/InterfazUsuario.cpp.o	5c13106ab77ea3f9
+8	272	1729301421155293067	CMakeFiles/Proyecto.dir/main.cpp.o	be6e099175f7044f
+8	324	1729301421207917942	CMakeFiles/Proyecto.dir/BaseDeDatos.cpp.o	9cc28894ff2c323b
+324	375	1729301421257686707	Proyecto	d0b08f206e654567

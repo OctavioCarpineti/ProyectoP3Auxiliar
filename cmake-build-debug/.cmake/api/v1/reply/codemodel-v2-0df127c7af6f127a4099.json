@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/octavio/Desktop/UCC/2do /P3/Proyecto/cmake-build-debug",
-		"source" : "/Users/octavio/Desktop/UCC/2do /P3/Proyecto"
+		"build" : "/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/cmake-build-debug",
+		"source" : "/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar"
 	},
 	"version" : 
 	{

@@ -1,20 +1,19 @@
-//
-// Created by Octavio Carpineti on 18/10/2024.
-//
+#ifndef BASEDEDATOS_H
+#define BASEDEDATOS_H
 
-#ifndef PROYECTO_BASEDEDATOS_H
-#define PROYECTO_BASEDEDATOS_H
-#include "Arboles/ArbolBinarioAVL.h"
+#include <string>
 #include "Competicion.h"
+#include "Arboles/ArbolBinarioAVL.h"
 
 class BaseDeDatos {
-private:
-    ArbolBinarioAVL<Competicion*> competiciones;
-
 public:
     void cargarDatos(const std::string& nombreArchivo);
-    void procesarEstadisticas();
-    // Métodos para realizar consultas
+    Competicion* buscarCompeticion(const std::string& nombre);
+    void agregarCompeticion(Competicion* competicion);
+    void eliminarCompeticion(const std::string& nombre);
+
+private:
+    ArbolBinarioAVL<Competicion*> competiciones;
 };
 
-#endif //PROYECTO_BASEDEDATOS_H
+#endif // BASEDEDATOS_H

@@ -9,6 +9,8 @@
 #define U05_ARBOL_ARBOL_ARBOLBINARIOAVL_H_
 
 #include "NodoArbolAVL.h"
+#include "iostream"
+
 
 template <class T>
 class ArbolBinarioAVL
@@ -370,8 +372,10 @@ void ArbolBinarioAVL<T>::postorder(NodoArbolAVL<T> *r)
 template <class T>
 void ArbolBinarioAVL<T>::print()
 {
+    std::cout << std::endl;
     if (root != NULL)
         root->print(false, "");
+    std::cout << std::endl;
 }
 
 template <class T>

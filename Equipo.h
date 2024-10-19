@@ -1,36 +1,27 @@
-//
-// Created by Octavio Carpineti on 18/10/2024.
-//
+#ifndef EQUIPO_H
+#define EQUIPO_H
 
-#ifndef PROYECTO_EQUIPO_H
-
-#include "Arboles/ArbolBinarioAVL.h"
-#include "Listas/ListaDoble.h"
-#include "Partido.h"
-#include "Competicion.h"
+#include <string>
+#include <vector>
 
 class Equipo {
+public:
+    Equipo(const std::string& nombre) : nombre(nombre) {}
+    const std::string& getNombre() const { return nombre; }
+    void listarPartidos() const;
+    void agregarPartido(const std::string& fecha, const std::string& oponente, int golesFavor, int golesContra, const std::string& competicion);
+    // Otros métodos para procesar estadísticas
+
 private:
     std::string nombre;
-    int golesAFavor;
-    int golesEnContra;
-    int victorias;
-    int derrotas;
-    ListaDoble<Partido*> partidos;
-
-public:
-    Equipo(const std::string& nombre);
-
-    // Getters y setters
-    std::string getNombre() const;
-    int getGolesAFavor() const;
-    int getGolesEnContra() const;
-    int getVictorias() const;
-    int getDerrotas() const;
-
-    void actualizarEstadisticas(int golesAFavor, int golesEnContra, bool esVictoria);
-    void agregarPartido(Partido* partido);
-    void listarPartidos() const;
+    struct Partido {
+        std::string fecha;
+        std::string oponente;
+        int golesFavor;
+        int golesContra;
+        std::string competicion;
+    };
+    std::vector<Partido> partidos;
 };
 
-#endif //PROYECTO_EQUIPO_H
+#endif // EQUIPO_H

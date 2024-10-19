@@ -9,7 +9,8 @@
 #ifndef U05_ARBOL_ARBOL_NODOARBOLAVL_H_
 #define U05_ARBOL_ARBOL_NODOARBOLAVL_H_
 
-#include <string.h>
+#include <iostream> // Para std::cout y std::endl
+#include <string>   // Para std::string
 using namespace std;
 
 template <class T>
@@ -72,7 +73,7 @@ public:
     void setHeight(int h){
         height = h;
     }
-
+/*
     void print(bool esDerecho, string identacion) {
         if (right != NULL) {
             right->print(true, identacion + (esDerecho ? "     " : "|    "));
@@ -88,6 +89,17 @@ public:
         if (left != NULL) {
             left->print(false, identacion + (esDerecho ? "|    " : "     "));
         }
+    }
+*/
+    void print(bool esDerecho, std::string identacion) {
+        if (esDerecho) {
+            std::cout << identacion << " /";
+            identacion += "  ";
+        } else {
+            std::cout << identacion << " \\";
+            identacion += "  ";
+        }
+        std::cout << "-- " << data << std::endl;
     }
 
 };

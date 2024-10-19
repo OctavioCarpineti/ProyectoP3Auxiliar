@@ -1,38 +1,24 @@
-//
-// Created by Octavio Carpineti on 17/10/2024.
-//
-
-// Competicion.h
-#ifndef PROYECTO_COMPETICION_H
-#define PROYECTO_COMPETICION_H
+#ifndef COMPETICION_H
+#define COMPETICION_H
 
 #include <string>
-#include "Listas/ListaDoble.h"
-#include "Arboles/ArbolBinarioAVL.h"
-#include "Partido.h"
+#include <vector>
+#include "Equipo.h"
 
 class Competicion {
-private:
-    std::string nombre;
-    std::string temporada;
-    ArbolBinarioAVL<Equipo*> equipos;
-    ListaDoble<Partido*> partidos;
-
 public:
-    Competicion(const std::string& nombre, const std::string& temporada);
+    // Constructor que inicializa el nombre de la competición
+    Competicion(const std::string& nombre) : nombre(nombre) {}
 
+    // Agrega un equipo a la competición
     void agregarEquipo(Equipo* equipo);
-    void agregarPartido(Partido* partido);
+
+    // Busca un equipo por nombre en la competición
     Equipo* buscarEquipo(const std::string& nombreEquipo);
 
-    // Getters
-    std::string getNombre() const;
-    std::string getTemporada() const;
-
-    // Métodos para acceder a los datos
-    void listarEquipos() const;
-    void listarPartidos() const;
+private:
+    std::string nombre; // Nombre de la competición
+    std::vector<Equipo*> equipos; // Lista de equipos en la competición
 };
 
-#endif // PROYECTO_COMPETICION_H
-
+#endif // COMPETICION_H

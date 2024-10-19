@@ -5,13 +5,17 @@
 #ifndef PROYECTO_INTERFAZUSUARIO_H
 #define PROYECTO_INTERFAZUSUARIO_H
 
+#include "GestorConsultas.h"
 
 class InterfazUsuario {
+private:
+    GestorConsultas* gestorConsultas;
+
 public:
+    InterfazUsuario(GestorConsultas* gestorConsultas);
     void mostrarMenu();
-    void procesarOpcion(int opcion);
+    void consultarResultadosEquipo();
     // Otros métodos para manejar la interacción con el usuario
 };
-
 
 #endif //PROYECTO_INTERFAZUSUARIO_H

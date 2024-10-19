@@ -2,9 +2,8 @@
 // Created by Octavio Carpineti on 18/10/2024.
 //
 
-// InterfazUsuario.cpp
 #include "InterfazUsuario.h"
-#include "iostream"
+#include <iostream>
 #include "GestorConsultas.h"
 
 // Constructor de la clase InterfazUsuario

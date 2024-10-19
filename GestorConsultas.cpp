@@ -1,16 +1,14 @@
-//
-// Created by Octavio Carpineti on 18/10/2024.
-//
-
-// GestorConsultas.cpp
 #include "GestorConsultas.h"
 #include "BaseDeDatos.h"
+#include <iostream>
 
-// Constructor de la clase GestorConsultas
 GestorConsultas::GestorConsultas(BaseDeDatos* baseDeDatos)
     : baseDeDatos(baseDeDatos) {}
 
-// Realiza una consulta de resultados de un equipo en una competición específica
+void GestorConsultas::cargarDatos(const std::string& nombreArchivo) {
+    baseDeDatos->cargarDatos(nombreArchivo);
+}
+
 void GestorConsultas::consultarResultadosEquipo(const std::string& nombreEquipo, const std::string& nombreCompeticion) {
     Competicion* competicion = baseDeDatos->buscarCompeticion(nombreCompeticion);
     if (competicion) {
@@ -18,11 +16,46 @@ void GestorConsultas::consultarResultadosEquipo(const std::string& nombreEquipo,
         if (equipo) {
             equipo->listarPartidos();
         } else {
-            std::cout << "Equipo no encontrado en la competición." << std::endl;
+            std::cout << "Equipo no encontrado." << std::endl;
         }
     } else {
         std::cout << "Competición no encontrada." << std::endl;
     }
 }
 
-// Otros métodos de consulta se implementarán aquí
+void GestorConsultas::agregarCompeticion(const std::string& nombreCompeticion) {
+    Competicion* competicion = new Competicion(nombreCompeticion);
+    baseDeDatos->agregarCompeticion(competicion);
+}
+
+void GestorConsultas::eliminarCompeticion(const std::string& nombreCompeticion) {
+    baseDeDatos->eliminarCompeticion(nombreCompeticion);
+}
+
+void GestorConsultas::agregarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante) {
+    Competicion* competicion = baseDeDatos->buscarCompeticion(nombreCompeticion);
+    if (competicion) {
+        Equipo* equipoLocalObj = competicion->buscarEquipo(equipoLocal);
+        if (!equipoLocalObj) {
+            equipoLocalObj = new Equipo(equipoLocal);
+            competicion->agregarEquipo(equipoLocalObj);
+        }
+        Equipo* equipoVisitanteObj = competicion->buscarEquipo(equipoVisitante);
+        if (!equipoVisitanteObj) {
+            equipoVisitanteObj = new Equipo(equipoVisitante);
+            competicion->agregarEquipo(equipoVisitanteObj);
+        }
+        equipoLocalObj->agregarPartido(fecha, equipoVisitante, golesLocal, golesVisitante, nombreCompeticion);
+        equipoVisitanteObj->agregarPartido(fecha, equipoLocal, golesVisitante, golesLocal, nombreCompeticion);
+    } else {
+        std::cout << "Competición no encontrada." << std::endl;
+    }
+}
+
+void GestorConsultas::eliminarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, const std::string& equipoVisitante) {
+    // Implementar la lógica para eliminar un partido
+}
+
+void GestorConsultas::modificarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante) {
+    // Implementar la lógica para modificar un partido
+}

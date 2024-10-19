@@ -1,19 +1,22 @@
-//
-// Created by Octavio Carpineti on 18/10/2024.
-//
+#ifndef GESTORCONSULTAS_H
+#define GESTORCONSULTAS_H
 
-#ifndef PROYECTO_GESTORCONSULTAS_H
-#define PROYECTO_GESTORCONSULTAS_H
-#include "string"
+#include "BaseDeDatos.h"
+#include <string>
 
 class GestorConsultas {
+private:
+    BaseDeDatos* baseDeDatos; // Puntero a la base de datos
+
 public:
+    GestorConsultas(BaseDeDatos* baseDeDatos);
+    void cargarDatos(const std::string& nombreArchivo);
     void consultarResultadosEquipo(const std::string& nombreEquipo, const std::string& nombreCompeticion);
-    void consultarResultadosEntreFechas(const std::string& nombreEquipo, const std::string& fechaInicio, const std::string& fechaFin);
-    void compararRendimientoGeneral(const std::string& equipo1, const std::string& equipo2);
-    void compararRendimientoParticular(const std::string& equipo1, const std::string& equipo2);
-    void filtrarPorUmbralGoles(double umbral, bool porEncima);
+    void agregarCompeticion(const std::string& nombreCompeticion);
+    void eliminarCompeticion(const std::string& nombreCompeticion);
+    void agregarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante);
+    void eliminarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, const std::string& equipoVisitante);
+    void modificarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante);
 };
 
-
-#endif //PROYECTO_GESTORCONSULTAS_H
+#endif // GESTORCONSULTAS_H

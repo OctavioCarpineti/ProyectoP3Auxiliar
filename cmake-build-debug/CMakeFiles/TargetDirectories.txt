@@ -1,3 +1,3 @@
-/Users/octavio/Desktop/UCC/2do /P3/Proyecto/cmake-build-debug/CMakeFiles/Proyecto.dir
-/Users/octavio/Desktop/UCC/2do /P3/Proyecto/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/octavio/Desktop/UCC/2do /P3/Proyecto/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/cmake-build-debug/CMakeFiles/Proyecto.dir
+/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/cmake-build-debug/CMakeFiles/rebuild_cache.dir
