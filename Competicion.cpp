@@ -1,11 +1,15 @@
 #include "Competicion.h"
 
-// Implementación del método para agregar un equipo a la competición
+Competicion::Competicion(const std::string& nombre) : nombre(nombre) {}
+
+std::string Competicion::getNombre() const {
+    return nombre;
+}
+
 void Competicion::agregarEquipo(Equipo* equipo) {
     equipos.push_back(equipo);
 }
 
-// Implementación del método para buscar un equipo por nombre en la competición
 Equipo* Competicion::buscarEquipo(const std::string& nombreEquipo) {
     for (auto& equipo : equipos) {
         if (equipo->getNombre() == nombreEquipo) {
@@ -13,4 +17,16 @@ Equipo* Competicion::buscarEquipo(const std::string& nombreEquipo) {
         }
     }
     return nullptr;
+}
+
+void Competicion::agregarPartido(const Partido& partido) {
+    partidos.push_back(partido);
+}
+
+const std::vector<Equipo*>& Competicion::getEquipos() const {
+    return equipos;
+}
+
+const std::vector<Partido>& Competicion::getPartidos() const {
+    return partidos;
 }

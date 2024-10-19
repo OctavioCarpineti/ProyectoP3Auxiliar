@@ -4,21 +4,29 @@
 #include <string>
 #include <vector>
 #include "Equipo.h"
+#include "Partido.h"
+#include "Arboles/NodoArbol.h"
+#include "Arboles/NodoArbolAVL.h"
+#include "Arboles/ArbolBinario.h"
+#include "Arboles/ArbolBinarioAVL.h"
+#include "Listas/Lista.h"
+#include "Listas/ListaDoble.h"
+#include "Listas/Nodo.h"
 
 class Competicion {
-public:
-    // Constructor que inicializa el nombre de la competición
-    Competicion(const std::string& nombre) : nombre(nombre) {}
-
-    // Agrega un equipo a la competición
-    void agregarEquipo(Equipo* equipo);
-
-    // Busca un equipo por nombre en la competición
-    Equipo* buscarEquipo(const std::string& nombreEquipo);
-
 private:
-    std::string nombre; // Nombre de la competición
-    std::vector<Equipo*> equipos; // Lista de equipos en la competición
+    std::string nombre;
+    std::vector<Equipo*> equipos;
+    std::vector<Partido> partidos;
+
+public:
+    Competicion(const std::string& nombre);
+    std::string getNombre() const;
+    void agregarEquipo(Equipo* equipo);
+    Equipo* buscarEquipo(const std::string& nombreEquipo);
+    void agregarPartido(const Partido& partido);
+    const std::vector<Equipo*>& getEquipos() const;
+    const std::vector<Partido>& getPartidos() const;
 };
 
 #endif // COMPETICION_H

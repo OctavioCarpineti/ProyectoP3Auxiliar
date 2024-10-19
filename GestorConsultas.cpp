@@ -59,3 +59,20 @@ void GestorConsultas::eliminarPartido(const std::string& nombreCompeticion, cons
 void GestorConsultas::modificarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante) {
     // Implementar la lógica para modificar un partido
 }
+
+void GestorConsultas::obtenerDatosCompeticion(const std::string& nombreCompeticion) {
+    Competicion* competicion = baseDeDatos->buscarCompeticion(nombreCompeticion);
+    if (competicion) {
+        std::cout << "Datos de la competición: " << nombreCompeticion << std::endl;
+        std::cout << "Equipos participantes:" << std::endl;
+        for (const auto& equipo : competicion->getEquipos()) {
+            std::cout << "- " << equipo->getNombre() << std::endl;
+        }
+        std::cout << "Partidos:" << std::endl;
+        for (const auto& partido : competicion->getPartidos()) {
+            std::cout << partido.getFecha() << ": " << partido.getEquipoLocal() << " " << partido.getGolesLocal() << " - " << partido.getGolesVisitante() << " " << partido.getEquipoVisitante() << std::endl;
+        }
+    } else {
+        std::cout << "Competición no encontrada." << std::endl;
+    }
+}

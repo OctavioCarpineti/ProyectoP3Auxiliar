@@ -3,15 +3,18 @@
 #include <sstream>
 #include <iostream>
 
-void BaseDeDatos::cargarDatos(const std::string& nombreArchivo) {
-    std::ifstream archivo("Recursos/" + nombreArchivo);
+BaseDeDatos::BaseDeDatos() : cargado(false) {}
+
+bool BaseDeDatos::cargarArchivo(const std::string& nombreArchivo) {
+    std::string rutaArchivo = "/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/Recursos/" + nombreArchivo;
+    std::ifstream archivo(rutaArchivo);
     if (!archivo.is_open()) {
-        std::cerr << "No se pudo abrir el archivo: " << nombreArchivo << std::endl;
-        return;
+        std::cerr << "No se pudo abrir el archivo: " << rutaArchivo << std::endl;
+        return false;
     }
 
     std::string linea;
-    std::getline(archivo, linea);
+    std::getline(archivo, linea); // Leer la cabecera
 
     while (std::getline(archivo, linea)) {
         std::stringstream ss(linea);
@@ -31,7 +34,7 @@ void BaseDeDatos::cargarDatos(const std::string& nombreArchivo) {
         Competicion* competicionObj = buscarCompeticion(competicion);
         if (!competicionObj) {
             competicionObj = new Competicion(competicion);
-            competiciones.put(competicionObj);
+            agregarCompeticion(competicionObj);
         }
 
         Equipo* equipoLocalObj = competicionObj->buscarEquipo(equipoLocal);
@@ -51,23 +54,33 @@ void BaseDeDatos::cargarDatos(const std::string& nombreArchivo) {
     }
 
     archivo.close();
+    cargado = true;
+    std::cout << "Archivo cargado exitosamente: " << rutaArchivo << std::endl;
+    return true;
+}
+
+bool BaseDeDatos::estaCargado() const {
+    return cargado;
+}
+
+void BaseDeDatos::cargarDatos(const std::string& nombreArchivo) {
+    cargarArchivo(nombreArchivo);
 }
 
 Competicion* BaseDeDatos::buscarCompeticion(const std::string& nombre) {
-    // Implementar la lógica para buscar una competición
-    // Ejemplo:
-    // return competiciones.buscar(nombre);
-    return nullptr; // Placeholder
+    Competicion tempCompeticion(nombre);
+    Competicion* competicion = competiciones.search(&tempCompeticion);
+    return competicion;
 }
 
 void BaseDeDatos::agregarCompeticion(Competicion* competicion) {
-    // Implementar la lógica para agregar una competición
-    // Ejemplo:
-    // competiciones.put(competicion);
+    competiciones.put(competicion);
 }
 
 void BaseDeDatos::eliminarCompeticion(const std::string& nombre) {
-    // Implementar la lógica para eliminar una competición
-    // Ejemplo:
-    // competiciones.eliminar(nombre);
+    Competicion tempCompeticion(nombre);
+    Competicion* competicion = competiciones.search(&tempCompeticion);
+    if (competicion) {
+        competiciones.remove(competicion);
+    }
 }

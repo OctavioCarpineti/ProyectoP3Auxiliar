@@ -1,10 +1,3 @@
-//
-// Created by Octavio Carpineti on 17/10/2024.
-//
-
-#ifndef PROYECTO_NODOARBOL_H
-#define PROYECTO_NODO_H
-
 #ifndef NODO_H
 #define NODO_H
 
@@ -35,5 +28,3 @@ public:
 };
 
 #endif //NODO_H
-
-#endif //PROYECTO_NODOARBOL_H

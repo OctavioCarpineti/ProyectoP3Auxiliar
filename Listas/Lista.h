@@ -1,10 +1,3 @@
-//
-// Created by Octavio Carpineti on 17/10/2024.
-//
-
-#ifndef PROYECTO_LISTA_H
-#define PROYECTO_LISTA_H
-
 #ifndef U02_LISTAS_LISTA_LISTA_H_
 #define U02_LISTAS_LISTA_LISTA_H_
 #include "Nodo.h"
@@ -256,5 +249,3 @@ void Lista<T>::print() {
 }
 
 #endif // U02_LISTAS_LISTA_LISTA_H_
-
-#endif //PROYECTO_LISTA_H
