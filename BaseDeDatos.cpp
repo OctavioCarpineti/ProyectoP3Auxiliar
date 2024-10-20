@@ -1,25 +1,31 @@
+// BaseDeDatos.cpp
 #include "BaseDeDatos.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include <cctype>
 
 // Definición de la función auxiliar para limpiar y convertir los valores de goles
 int BaseDeDatos::convertirGoles(const std::string& str) {
     std::string limpio;
     std::remove_copy_if(str.begin(), str.end(), std::back_inserter(limpio), [](char c) { return !std::isdigit(c); });
+    if (limpio.empty()) {
+        throw std::invalid_argument("El campo de goles está vacío o no contiene números válidos.");
+    }
     return std::stoi(limpio);
 }
 
 BaseDeDatos::BaseDeDatos() : cargado(false) {}
 
 bool BaseDeDatos::cargarArchivo(const std::string& nombreArchivo) {
-    std::string rutaArchivo = "/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/Recursos/" + nombreArchivo;
+    std::string rutaArchivo = "/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/Recursos/Base_Datos_COMA.csv";
     std::cout << "Intentando abrir el archivo: " << rutaArchivo << std::endl;
     std::ifstream archivo(rutaArchivo);
     if (!archivo.is_open()) {
         std::cerr << "No se pudo abrir el archivo: " << rutaArchivo << std::endl;
+        std::cerr << "Verifique que el archivo existe y tiene los permisos correctos." << std::endl;
         return false;
     }
 
@@ -41,8 +47,8 @@ bool BaseDeDatos::cargarArchivo(const std::string& nombreArchivo) {
                 campos.push_back(campo);
             }
 
-            if (campos.size() < 10) {
-                std::cerr << "Error en línea " << lineaNum << ": número incorrecto de campos." << std::endl;
+            if (campos.size() < 7) { // Verificar que hay al menos 7 campos
+                std::cerr << "Error en línea " << lineaNum << ": número incorrecto de campos. Se esperaban al menos 7, pero se encontraron " << campos.size() << "." << std::endl;
                 continue;
             }
 
