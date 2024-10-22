@@ -9,15 +9,14 @@ std::string Competicion::getNombre() const {
 
 void Competicion::agregarEquipo(Equipo* equipo) {
     std::cout << "Agregando equipo: " << equipo->getNombre() << " a la competición: " << nombre << std::endl;
-    equipos.push_back(equipo);
+    equipos[equipo->getNombre()] = equipo;
 }
 
 Equipo* Competicion::buscarEquipo(const std::string& nombreEquipo) {
     std::cout << "Buscando equipo: " << nombreEquipo << " en la competición: " << nombre << std::endl;
-    for (auto& equipo : equipos) {
-        if (equipo->getNombre() == nombreEquipo) {
-            return equipo;
-        }
+    auto it = equipos.find(nombreEquipo);
+    if (it != equipos.end()) {
+        return it->second;
     }
     return nullptr;
 }
@@ -27,10 +26,10 @@ void Competicion::agregarPartido(const Partido& partido) {
     partidos.push_back(partido);
 }
 
-const std::vector<Equipo*>& Competicion::getEquipos() const {
+const std::map<std::string, Equipo*>& Competicion::getEquipos() const {
     return equipos;
 }
 
-const std::vector<Partido>& Competicion::getPartidos() const {
+const std::list<Partido>& Competicion::getPartidos() const {
     return partidos;
 }

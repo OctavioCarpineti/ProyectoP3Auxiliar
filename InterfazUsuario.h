@@ -1,10 +1,10 @@
-#ifndef PROYECTO_INTERFAZUSUARIO_H
-#define PROYECTO_INTERFAZUSUARIO_H
+#ifndef INTERFAZUSUARIO_H
+#define INTERFAZUSUARIO_H
 
-#include "GestorConsultas.h"
-#include <iostream>
 #include <string>
-#include <vector>
+
+class GestorConsultas;
+class BaseDeDatos;
 
 class InterfazUsuario {
 private:
@@ -13,9 +13,26 @@ private:
 
 public:
     InterfazUsuario(GestorConsultas* gestorConsultas, BaseDeDatos* baseDeDatos);
-    void mostrarMenuInicial();
     void mostrarMenuPrincipal();
-    void consultarResultadosEquipo();
+    void mostrarMenuInicial();
+    void mostrarMenuBusqueda();
+    void mostrarMenuResultadosPrincipales();
+    void mostrarMenuConsultasDinamicas();
+    void mostrarMenuModificacion();
+
+    void mostrarPartidosConMasGoles();
+    void mostrarGolesTotalesPorEquipo();
+    void mostrarPromedioGolesPorEquipo();
+    void mostrarDerrotasYTriunfosPorEquipo();
+    void mostrarFechasConMasYMenosGoles();
+    void mostrarCompeticionConMasGoles();
+    void mostrarEquipoConMasYMenosGoles();
+
+    void consultarResultadosEquipoCompeticion();
+    void consultarResultadosEquipoFechas();
+    void compararRendimientoGeneral();
+    void compararRendimientoParticular();
+    void filtrarEquiposPorUmbral();
 
     void buscarPorCompeticion();
     void buscarPorEquipo();
@@ -25,7 +42,10 @@ public:
     void mostrarPartidosDestacados();
     void mostrarClasificaciones();
 
-    // Funciones auxiliares
+    void agregarPartido();
+    void eliminarPartido();
+    void modificarPartido();
+
     void mostrarCompeticiones();
     void mostrarEquipos();
     void mostrarTemporadas();
@@ -33,4 +53,4 @@ public:
     std::string obtenerNombreCompeticion(int opcion);
 };
 
-#endif //PROYECTO_INTERFAZUSUARIO_H
+#endif // INTERFAZUSUARIO_H

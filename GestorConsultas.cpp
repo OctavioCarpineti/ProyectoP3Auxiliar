@@ -3,122 +3,70 @@
 
 GestorConsultas::GestorConsultas(BaseDeDatos* baseDeDatos) : baseDeDatos(baseDeDatos) {}
 
-void GestorConsultas::cargarDatos(const std::string& nombreArchivo) {
-    try {
-        baseDeDatos->cargarDatos(nombreArchivo);
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al cargar datos: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al cargar datos." << std::endl;
+// Implementación de las nuevas funciones
+
+void GestorConsultas::mostrarPartidosConMasGoles() {
+    auto partidos = baseDeDatos->obtenerPartidosConMasGoles();
+    for (const auto& partido : partidos) {
+        std::cout << partido.getFecha() << " - " << partido.getEquipoLocal() << " vs " << partido.getEquipoVisitante() << " - Goles: " << partido.getGolesLocal() + partido.getGolesVisitante() << std::endl;
     }
 }
 
-void GestorConsultas::consultarResultadosEquipo(const std::string& nombreEquipo, const std::string& nombreCompeticion) {
-    try {
-        Competicion* competicion = baseDeDatos->buscarCompeticion(nombreCompeticion);
-        if (competicion) {
-            Equipo* equipo = competicion->buscarEquipo(nombreEquipo);
-            if (equipo) {
-                equipo->listarPartidos();
-            } else {
-                std::cout << "Equipo no encontrado." << std::endl;
-            }
-        } else {
-            std::cout << "Competición no encontrada." << std::endl;
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al consultar resultados del equipo: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al consultar resultados del equipo." << std::endl;
+void GestorConsultas::mostrarGolesTotalesPorEquipo(const std::string& nombreEquipo) {
+    auto goles = baseDeDatos->obtenerGolesTotalesPorEquipo(nombreEquipo);
+    if (goles.first == 0 && goles.second == 0) {
+        std::cout << "No se encontraron datos para el equipo: " << nombreEquipo << std::endl;
+    } else {
+        std::cout << "Goles a favor: " << goles.first << ", Goles en contra: " << goles.second << std::endl;
     }
 }
 
-void GestorConsultas::agregarCompeticion(const std::string& nombreCompeticion) {
-    try {
-        Competicion* competicion = new Competicion(nombreCompeticion);
-        baseDeDatos->agregarCompeticion(competicion);
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al agregar competición: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al agregar competición." << std::endl;
+void GestorConsultas::mostrarPromedioGolesPorEquipo(const std::string& nombreEquipo) {
+    auto promedio = baseDeDatos->obtenerPromedioGolesPorEquipo(nombreEquipo);
+    std::cout << "Promedio de goles a favor: " << promedio.first << ", Promedio de goles en contra: " << promedio.second << std::endl;
+}
+
+void GestorConsultas::mostrarDerrotasYTriunfosPorEquipo(const std::string& nombreEquipo) {
+    auto resultados = baseDeDatos->obtenerDerrotasYTriunfosPorEquipo(nombreEquipo);
+    std::cout << "Derrotas: " << resultados.first << ", Triunfos: " << resultados.second << std::endl;
+}
+
+void GestorConsultas::mostrarFechasConMasYMenosGoles(const std::string& nombreEquipo) {
+    auto fechas = baseDeDatos->obtenerFechasConMasYMenosGoles(nombreEquipo);
+    std::cout << "Fecha con más goles: " << fechas.first << ", Fecha con menos goles: " << fechas.second << std::endl;
+}
+
+void GestorConsultas::mostrarCompeticionConMasGoles() {
+    auto competicion = baseDeDatos->obtenerCompeticionConMasGoles();
+    std::cout << "Competición con más goles: " << competicion << std::endl;
+}
+
+void GestorConsultas::mostrarEquipoConMasYMenosGoles() {
+    auto equipos = baseDeDatos->obtenerEquipoConMasYMenosGoles();
+    std::cout << "Equipo con más goles: " << equipos.first << ", Equipo con menos goles: " << equipos.second << std::endl;
+}
+
+void GestorConsultas::consultarResultadosEquipoFechas(const std::string& nombreEquipo, const std::string& fechaInicio, const std::string& fechaFin) {
+    auto partidos = baseDeDatos->obtenerResultadosEquipoFechas(nombreEquipo, fechaInicio, fechaFin);
+    for (const auto& partido : partidos) {
+        std::cout << partido.getFecha() << " - " << partido.getEquipoLocal() << " vs " << partido.getEquipoVisitante() << " - Resultado: " << partido.getGolesLocal() << " a " << partido.getGolesVisitante() << std::endl;
     }
 }
 
-void GestorConsultas::eliminarCompeticion(const std::string& nombreCompeticion) {
-    try {
-        baseDeDatos->eliminarCompeticion(nombreCompeticion);
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al eliminar competición: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al eliminar competición." << std::endl;
-    }
+void GestorConsultas::compararRendimientoGeneral(const std::string& equipo1, const std::string& equipo2) {
+    auto rendimiento = baseDeDatos->compararRendimientoGeneral(equipo1, equipo2);
+    std::cout << equipo1 << " - Goles a favor: " << rendimiento.first.first << ", Goles en contra: " << rendimiento.first.second << std::endl;
+    std::cout << equipo2 << " - Goles a favor: " << rendimiento.second.first << ", Goles en contra: " << rendimiento.second.second << std::endl;
 }
 
-void GestorConsultas::agregarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante) {
-    try {
-        Competicion* competicion = baseDeDatos->buscarCompeticion(nombreCompeticion);
-        if (competicion) {
-            Equipo* equipoLocalObj = competicion->buscarEquipo(equipoLocal);
-            if (!equipoLocalObj) {
-                equipoLocalObj = new Equipo(equipoLocal);
-                competicion->agregarEquipo(equipoLocalObj);
-            }
-            Equipo* equipoVisitanteObj = competicion->buscarEquipo(equipoVisitante);
-            if (!equipoVisitanteObj) {
-                equipoVisitanteObj = new Equipo(equipoVisitante);
-                competicion->agregarEquipo(equipoVisitanteObj);
-            }
-            equipoLocalObj->agregarPartido(fecha, equipoVisitante, golesLocal, golesVisitante, nombreCompeticion);
-            equipoVisitanteObj->agregarPartido(fecha, equipoLocal, golesVisitante, golesLocal, nombreCompeticion);
-        } else {
-            std::cout << "Competición no encontrada." << std::endl;
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al agregar partido: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al agregar partido." << std::endl;
-    }
+void GestorConsultas::compararRendimientoParticular(const std::string& equipo1, const std::string& equipo2) {
+    auto resultados = baseDeDatos->compararRendimientoParticular(equipo1, equipo2);
+    std::cout << "Partidos jugados: " << resultados.first << ", Empates: " << resultados.second << std::endl;
 }
 
-void GestorConsultas::eliminarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, const std::string& equipoVisitante) {
-    try {
-        // Implementar la lógica para eliminar un partido
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al eliminar partido: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al eliminar partido." << std::endl;
-    }
-}
-
-void GestorConsultas::modificarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante) {
-    try {
-        // Implementar la lógica para modificar un partido
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al modificar partido: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al modificar partido." << std::endl;
-    }
-}
-
-void GestorConsultas::obtenerDatosCompeticion(const std::string& nombreCompeticion) {
-    try {
-        Competicion* competicion = baseDeDatos->buscarCompeticion(nombreCompeticion);
-        if (competicion) {
-            std::cout << "Datos de la competición: " << nombreCompeticion << std::endl;
-            std::cout << "Equipos participantes:" << std::endl;
-            for (const auto& equipo : competicion->getEquipos()) {
-                std::cout << "- " << equipo->getNombre() << std::endl;
-            }
-            std::cout << "Partidos:" << std::endl;
-            for (const auto& partido : competicion->getPartidos()) {
-                std::cout << partido.getFecha() << ": " << partido.getEquipoLocal() << " " << partido.getGolesLocal() << " - " << partido.getGolesVisitante() << " " << partido.getEquipoVisitante() << std::endl;
-            }
-        } else {
-            std::cout << "Competición no encontrada." << std::endl;
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción capturada al obtener datos de la competición: " << e.what() << std::endl;
-    } catch (...) {
-        std::cerr << "Excepción desconocida capturada al obtener datos de la competición." << std::endl;
+void GestorConsultas::filtrarEquiposPorUmbral(int umbral, bool porEncima) {
+    auto equipos = baseDeDatos->filtrarEquiposPorUmbral(umbral, porEncima);
+    for (const auto& equipo : equipos) {
+        std::cout << equipo.getNombre() << " - Promedio de goles: " << equipo.getPromedioGoles() << std::endl;
     }
 }

@@ -17,3 +17,13 @@ void Equipo::listarPartidos() const {
 void Equipo::agregarPartido(const std::string& fecha, const std::string& oponente, int golesFavor, int golesContra, const std::string& competicion) {
     partidos.emplace_back(fecha, nombre, golesFavor, golesContra, oponente, competicion);
 }
+
+double Equipo::getPromedioGoles() const {
+    if (partidos.empty()) return 0.0;
+
+    int totalGoles = 0;
+    for (const auto& partido : partidos) {
+        totalGoles += partido.getGolesLocal();
+    }
+    return static_cast<double>(totalGoles) / partidos.size();
+}
