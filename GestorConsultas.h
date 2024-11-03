@@ -1,36 +1,54 @@
-#ifndef GESTORCONSULTAS_H
-#define GESTORCONSULTAS_H
+#ifndef GESTOR_CONSULTAS_H
+#define GESTOR_CONSULTAS_H
 
 #include "BaseDeDatos.h"
+#include "Listas/Lista.h"
+#include "Arbol/ArbolBinarioAVL.h"
 #include <string>
 
 class GestorConsultas {
 private:
-    BaseDeDatos* baseDeDatos; // Puntero a la base de datos
+    BaseDeDatos& baseDatos;
+    
+    // Métodos auxiliares para procesar consultas
+    ArbolBinarioAVL<Partido> ordenarPartidosPorGoles(const ListaDoble<Partido>& partidos);
+    bool compararPartidosPorGoles(const Partido& p1, const Partido& p2) const;
 
 public:
-    GestorConsultas(BaseDeDatos* baseDeDatos);
-    void cargarDatos(const std::string& nombreArchivo);
-    void consultarResultadosEquipo(const std::string& nombreEquipo, const std::string& nombreCompeticion);
-    void agregarCompeticion(const std::string& nombreCompeticion);
-    void eliminarCompeticion(const std::string& nombreCompeticion);
-    void agregarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante);
-    void eliminarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, const std::string& equipoVisitante);
-    void modificarPartido(const std::string& nombreCompeticion, const std::string& fecha, const std::string& equipoLocal, int golesLocal, int golesVisitante, const std::string& equipoVisitante);
-    void obtenerDatosCompeticion(const std::string& nombreCompeticion);
+    explicit GestorConsultas(BaseDeDatos& bd);
+    
+    // Consultas principales usando estructuras optimizadas
+    ListaDoble<Partido> obtenerTop5PartidosPorGoles(const std::string& competicion);
+    std::pair<int, int> consultarGolesTotalesPorEquipo(const std::string& equipo);
+    std::pair<double, double> consultarPromedioGolesPorEquipo(const std::string& equipo);
+    
+    // Consultas de búsqueda y filtrado
+    ListaDoble<Partido> consultarPartidosEntreFechas(const std::string& equipo, 
+                                                    const std::string& fechaInicio, 
+                                                    const std::string& fechaFin);
+    std::pair<std::string, std::string> consultarEquiposMaxMinGoles();
+    std::string consultarCompeticionMasGoles();
+    
+    // Métodos para obtener listas de datos
+    Lista<std::string> obtenerListaEquipos() const;
+    Lista<std::string> obtenerListaCompeticiones() const;
 
-    // Nuevas funciones
-    void mostrarPartidosConMasGoles();
-    void mostrarGolesTotalesPorEquipo(const std::string& nombreEquipo);
-    void mostrarPromedioGolesPorEquipo(const std::string& nombreEquipo);
-    void mostrarDerrotasYTriunfosPorEquipo(const std::string& nombreEquipo);
-    void mostrarFechasConMasYMenosGoles(const std::string& nombreEquipo);
-    void mostrarCompeticionConMasGoles();
-    void mostrarEquipoConMasYMenosGoles();
-    void consultarResultadosEquipoFechas(const std::string& nombreEquipo, const std::string& fechaInicio, const std::string& fechaFin);
-    void compararRendimientoGeneral(const std::string& equipo1, const std::string& equipo2);
-    void compararRendimientoParticular(const std::string& equipo1, const std::string& equipo2);
-    void filtrarEquiposPorUmbral(int umbral, bool porEncima);
+    // Agregar estos métodos:
+    std::pair<int, int> consultarGolesTotalesPorEquipo(const std::string& equipo, const std::string& competicion);
+    std::pair<double, double> consultarPromedioGolesPorEquipo(const std::string& equipo, const std::string& competicion);
+    std::pair<int, int> obtenerDerrotasYTriunfosPorEquipo(const std::string& equipo, const std::string& competicion);
+    std::pair<std::string, std::string> obtenerFechasConMasYMenosGoles(const std::string& equipo, const std::string& competicion);
+    std::pair<std::string, std::string> consultarEquiposMaxMinGolesPorCompeticion(const std::string& competicion);
+
+    // Agregar estos métodos para modificación de datos
+    bool agregarPartido(const std::string& fecha, const std::string& equipoLocal,
+                       int golesLocal, int golesVisitante,
+                       const std::string& equipoVisitante, const std::string& competicion);
+    bool modificarPartido(const std::string& fecha, const std::string& equipoLocal,
+                         const std::string& equipoVisitante, int nuevosGolesLocal,
+                         int nuevosGolesVisitante);
+    bool eliminarPartido(const std::string& fecha, const std::string& equipoLocal,
+                        const std::string& equipoVisitante);
 };
 
-#endif // GESTORCONSULTAS_H
+#endif

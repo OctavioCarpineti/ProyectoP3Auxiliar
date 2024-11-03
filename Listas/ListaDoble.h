@@ -9,6 +9,8 @@
 #define LISTA_DOBLE_H
 
 #include <iostream>
+#include "Nodo.h"
+
 
 template <class T>
 class NodoDoble {
@@ -35,6 +37,7 @@ class ListaDoble {
 private:
     NodoDoble<T>* inicio;
     NodoDoble<T>* fin;
+    int tam;
 
 public:
     ListaDoble();
@@ -49,10 +52,11 @@ public:
     void reemplazar(int pos, T dato);
     void imprimir() const;
     void vaciar();
+    void insertar(int pos, const T& dato);
 };
 
 template <class T>
-ListaDoble<T>::ListaDoble() : inicio(nullptr), fin(nullptr) {}
+ListaDoble<T>::ListaDoble() : inicio(nullptr), fin(nullptr), tam(0) {}
 
 template <class T>
 ListaDoble<T>::~ListaDoble() {
@@ -66,15 +70,7 @@ bool ListaDoble<T>::esVacia() const {
 
 template <class T>
 int ListaDoble<T>::getTamanio() const {
-    NodoDoble<T>* aux = inicio;
-    int size = 0;
-
-    while (aux != nullptr) {
-        aux = aux->getSiguiente();
-        size++;
-    }
-
-    return size;
+    return tam;
 }
 
 template <class T>
@@ -88,6 +84,7 @@ void ListaDoble<T>::insertarPrimero(T dato) {
         inicio->setAnterior(nuevo);
         inicio = nuevo;
     }
+    tam++;
 }
 
 template <class T>
@@ -101,6 +98,7 @@ void ListaDoble<T>::insertarUltimo(T dato) {
         nuevo->setAnterior(fin);
         fin = nuevo;
     }
+    tam++;
 }
 
 template <class T>
@@ -195,6 +193,27 @@ void ListaDoble<T>::vaciar() {
     }
 
     inicio = fin = nullptr;
+    tam = 0;
+}
+
+template <class T>
+void ListaDoble<T>::insertar(int pos, const T& dato) {
+    if (pos < 0 || pos > getTamanio()) throw std::out_of_range("Posición inválida");
+    
+    NodoDoble<T>* nuevo = new NodoDoble<T>(dato);
+    if (pos == 0) {
+        nuevo->setSiguiente(inicio);
+        if (inicio) inicio->setAnterior(nuevo);
+        inicio = nuevo;
+    } else {
+        NodoDoble<T>* aux = inicio;
+        for (int i = 0; i < pos - 1; i++) aux = aux->getSiguiente();
+        nuevo->setSiguiente(aux->getSiguiente());
+        nuevo->setAnterior(aux);
+        if (aux->getSiguiente()) aux->getSiguiente()->setAnterior(nuevo);
+        aux->setSiguiente(nuevo);
+    }
+    tam++;
 }
 
 #endif // LISTA_DOBLE_H

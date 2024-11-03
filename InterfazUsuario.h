@@ -1,56 +1,63 @@
 #ifndef INTERFAZUSUARIO_H
 #define INTERFAZUSUARIO_H
 
+#include "GestorConsultas.h"
+#include "BaseDeDatos.h"
+#include "Partido.h"
+#include "Listas/ListaDoble.h"
 #include <string>
-
-class GestorConsultas;
-class BaseDeDatos;
+#include <utility>
 
 class InterfazUsuario {
 private:
-    GestorConsultas* gestorConsultas;
-    BaseDeDatos* baseDeDatos;
+    GestorConsultas& gestor;
+    BaseDeDatos& baseDatos;
 
-public:
-    InterfazUsuario(GestorConsultas* gestorConsultas, BaseDeDatos* baseDeDatos);
-    void mostrarMenuPrincipal();
-    void mostrarMenuInicial();
-    void mostrarMenuBusqueda();
-    void mostrarMenuResultadosPrincipales();
-    void mostrarMenuConsultasDinamicas();
-    void mostrarMenuModificacion();
+    // Menús principales
+    void mostrarMenuPrincipal() const;
+    void mostrarMenuConsultasDinamicas() const;
+    void mostrarMenuModificacionDatos() const;
 
-    void mostrarPartidosConMasGoles();
-    void mostrarGolesTotalesPorEquipo();
-    void mostrarPromedioGolesPorEquipo();
-    void mostrarDerrotasYTriunfosPorEquipo();
-    void mostrarFechasConMasYMenosGoles();
-    void mostrarCompeticionConMasGoles();
-    void mostrarEquipoConMasYMenosGoles();
+    void mostrarMenuRegistroDatos() const;
+    void procesarMenuRegistroDatos();
 
-    void consultarResultadosEquipoCompeticion();
-    void consultarResultadosEquipoFechas();
-    void compararRendimientoGeneral();
-    void compararRendimientoParticular();
-    void filtrarEquiposPorUmbral();
+    std::string solicitarFecha() const;  // Agregar esta declaración
 
-    void buscarPorCompeticion();
-    void buscarPorEquipo();
-    void buscarPorTemporada();
-    void buscarPorFecha();
-    void mostrarEstadisticasGenerales();
-    void mostrarPartidosDestacados();
-    void mostrarClasificaciones();
+    // Procesadores de menús
+    void procesarMenuProcesamientoDatos();
+    void procesarMenuConsultasDinamicas();
+    void procesarMenuModificacionDatos();
 
+    // Métodos de visualización existentes
+    void mostrarPartidos(const ListaDoble<Partido>& partidos) const;
+    void mostrarEstadisticasEquipo(const std::string& equipo) const;
+    void mostrarTop5PorCompeticion(const std::string& competicion) const;
+    void mostrarGolesTotalesPorEquipo(const std::string& equipo) const;
+    void mostrarPromedioGolesPorEquipo(const std::string& equipo) const;
+    void mostrarDerrotasYTriunfosPorEquipo(const std::string& equipo) const;
+    void mostrarFechasExtremasPorEquipo(const std::string& equipo) const;
+    void mostrarCompeticionMasGoles() const;
+    void mostrarEquiposExtremosGeneralYPorCompeticion() const;
+
+    // Métodos auxiliares existentes
+    std::string solicitarEquipo() const;
+    std::string solicitarCompeticion() const;
+    std::pair<std::string, std::string> solicitarFechas() const;
+
+    // Nuevos métodos para consultas dinámicas
+    void mostrarResultadosEquipoCompeticion(const std::string& equipo, const std::string& competicion) const;
+    void mostrarComparacionRendimientoGeneral(const std::string& equipo1, const std::string& equipo2) const;
+    void mostrarComparacionRendimientoParticular(const std::string& equipo1, const std::string& equipo2) const;
+    void mostrarEquiposPorUmbralGoles() const;
+
+    // Nuevos métodos para modificación de datos
     void agregarPartido();
     void eliminarPartido();
     void modificarPartido();
 
-    void mostrarCompeticiones();
-    void mostrarEquipos();
-    void mostrarTemporadas();
-    std::string solicitarFecha();
-    std::string obtenerNombreCompeticion(int opcion);
+public:
+    InterfazUsuario(GestorConsultas& g, BaseDeDatos& bd);
+    void iniciar();
 };
 
 #endif // INTERFAZUSUARIO_H

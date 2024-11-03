@@ -1,7 +1,15 @@
+//
+// Created by Octavio Carpineti on 17/10/2024.
+//
+
+#ifndef PROYECTO_ARBOLBINARIOAVL_H
+#define PROYECTO_ARBOLBINARIOAVL_H
+
 #ifndef U05_ARBOL_ARBOL_ARBOLBINARIOAVL_H_
 #define U05_ARBOL_ARBOL_ARBOLBINARIOAVL_H_
 
 #include "NodoArbolAVL.h"
+#include <iostream>
 
 template <class T>
 class ArbolBinarioAVL
@@ -26,7 +34,7 @@ public:
 
     ~ArbolBinarioAVL();
 
-    bool esVacio();
+    bool esVacio() const;
 
     void print();
 
@@ -35,10 +43,16 @@ public:
         return getBalance(root);
     }
 
+    Lista<T> obtenerElementos() const {
+        Lista<T> lista;
+        obtenerElementosInorder(root, lista);
+        return lista;
+    }
+
 private:
     T search(T data, NodoArbolAVL<T> *r);
     void preorder(NodoArbolAVL<T> *r);
-    void inorder(NodoArbolAVL<T> *r);
+    void inorder(NodoArbolAVL<T> *r, Lista<T>& lista) const;
     void postorder(NodoArbolAVL<T> *r);
 
     int max(int a, int b);
@@ -50,6 +64,7 @@ private:
     NodoArbolAVL<T> *remove(T data, NodoArbolAVL<T> *r);
 
     NodoArbolAVL<T> *findMin(NodoArbolAVL<T> *r);
+    void obtenerElementosInorder(NodoArbolAVL<T>* r, Lista<T>& lista) const;
 };
 
 /**
@@ -286,7 +301,7 @@ NodoArbolAVL<T> *ArbolBinarioAVL<T>::findMin(NodoArbolAVL<T> *r)
  * @return
  */
 template <class T>
-bool ArbolBinarioAVL<T>::esVacio() { return root == nullptr; }
+bool ArbolBinarioAVL<T>::esVacio() const { return root == nullptr; }
 
 /**
  * Recorre un árbol en preorden
@@ -322,7 +337,7 @@ void ArbolBinarioAVL<T>::inorder()
 }
 
 template <class T>
-void ArbolBinarioAVL<T>::inorder(NodoArbolAVL<T> *r)
+void ArbolBinarioAVL<T>::inorder(NodoArbolAVL<T> *r, Lista<T>& lista) const
 {
     if (r == nullptr)
     {
@@ -428,4 +443,17 @@ NodoArbolAVL<T> *ArbolBinarioAVL<T>::rotacionIzquierda(NodoArbolAVL<T> *x)
     return y;
 }
 
+template <class T>
+void ArbolBinarioAVL<T>::obtenerElementosInorder(NodoArbolAVL<T>* r, Lista<T>& lista) const {
+    if (r == nullptr) {
+        return;
+    }
+    
+    obtenerElementosInorder(r->getLeft(), lista);
+    lista.insertarUltimo(r->getData());
+    obtenerElementosInorder(r->getRight(), lista);
+}
+
 #endif // U05_ARBOL_ARBOL_ARBOLBINARIOAVL_H_
+
+#endif //PROYECTO_ARBOLBINARIOAVL_H

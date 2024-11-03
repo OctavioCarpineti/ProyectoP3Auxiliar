@@ -1,214 +1,213 @@
 #include "BaseDeDatos.h"
+#include "Listas/Lista.h"
+#include "Partido.h"
+#include "Equipo.h"
+#include "Competicion.h"
 #include <iostream>
+#include <iomanip>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
-#include <algorithm>
-#include <unordered_map>
-#include <climits>
+#include <chrono>
+#include <filesystem>
+#include <set>
 
-BaseDeDatos::BaseDeDatos() {
-    // Implementar la lógica para constructor de base de datos
+BaseDeDatos::BaseDeDatos() {}
+
+BaseDeDatos::~BaseDeDatos() {
+    // Limpieza de memoria si es necesaria
+    partidos.vaciar();
 }
 
 bool BaseDeDatos::cargarArchivo(const std::string& nombreArchivo) {
     try {
-        std::ifstream archivo("/Users/octavio/Desktop/UCC/2do /P3/ProyectoAuxiliar/ProyectoP3Auxiliar/Recursos/Base_Datos_COMA.csv");        if (!archivo.is_open()) {
-            throw std::runtime_error("Error al abrir el archivo: " + nombreArchivo);
+        std::ifstream archivo(nombreArchivo);
+        if (!archivo.is_open()) {
+            std::cerr << "Error: No se pudo abrir el archivo: " << nombreArchivo << "\n";
+            return false;
         }
 
+        std::cout << "Archivo abierto correctamente.\n";
+        int lineasProcesadas = 0;
+        int partidosAgregados = 0;
+
         std::string linea;
-        int fila = 0;
-        // Leer y descartar la primera línea (encabezados)
-        std::getline(archivo, linea);
-
+        std::getline(archivo, linea); // Saltamos encabezados
+        std::cout << "Encabezados leídos: " << linea << "\n";
+        
         while (std::getline(archivo, linea)) {
-            fila++;
+            lineasProcesadas++;
+            
             try {
-                std::istringstream ss(linea);
+                std::stringstream ss(linea);
                 std::string jornada, fecha, equipoLocal, equipoVisitante, competicion;
-                std::string golesLocalStr, golesVisitanteStr;
                 int golesLocal, golesVisitante;
-
+                
                 std::getline(ss, jornada, ',');
                 std::getline(ss, fecha, ',');
                 std::getline(ss, equipoLocal, ',');
-                std::getline(ss, golesLocalStr, ',');
-                std::getline(ss, golesVisitanteStr, ',');
+                ss >> golesLocal;
+                ss.ignore();
+                ss >> golesVisitante;
+                ss.ignore();
                 std::getline(ss, equipoVisitante, ',');
                 std::getline(ss, competicion);
-
-                // Convertir los goles de string a int
+                
+                // Crear y agregar partido
+                Partido partido(fecha, equipoLocal, golesLocal, golesVisitante, 
+                              equipoVisitante, competicion);
+                partidos.insertarUltimo(partido);
+                
+                // Agregar equipos
                 try {
-                    golesLocal = std::stoi(golesLocalStr);
-                    golesVisitante = std::stoi(golesVisitanteStr);
-                } catch (const std::invalid_argument& e) {
-                    throw std::runtime_error("Error al convertir goles a número en la fila " + std::to_string(fila));
-                }
-
-                Partido partido(fecha, equipoLocal, golesLocal, golesVisitante, equipoVisitante, competicion);
-                partidos.push_back(partido);
+                    equipos.put(Equipo(equipoLocal));
+                } catch (...) {}
+                
+                try {
+                    equipos.put(Equipo(equipoVisitante));
+                } catch (...) {}
+                
+                // Agregar competición
+                try {
+                    competiciones.put(Competicion(competicion));
+                } catch (...) {}
+                
+                partidosAgregados++;
+                
             } catch (const std::exception& e) {
-                std::cerr << e.what() << std::endl;
-                // Puedes decidir si continuar o detener la lectura del archivo
-                // return false; // Descomenta esta línea si deseas detener la lectura
+                std::cerr << "Error en línea " << lineasProcesadas << ": " << e.what() << "\n";
+                continue;
             }
         }
+        
+        std::cout << "\nResumen de carga:\n"
+                  << "- Líneas procesadas: " << lineasProcesadas << "\n"
+                  << "- Partidos agregados: " << partidosAgregados << "\n"
+                  << "- Equipos únicos: " << equipos.obtenerElementos().getTamanio() << "\n"
+                  << "- Competiciones únicas: " << competiciones.obtenerElementos().getTamanio() << "\n";
+        
+        return partidosAgregados > 0;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error crítico durante la carga del archivo: " << e.what() << "\n";
+        throw;
+    }
+}
 
-        archivo.close();
+Lista<std::string> BaseDeDatos::obtenerTodosLosEquipos() const {
+    Lista<std::string> listaEquipos;
+    Lista<Equipo> equiposOrdenados = equipos.obtenerElementos();
+    
+    for(int i = 0; i < equiposOrdenados.getTamanio(); i++) {
+        listaEquipos.insertarUltimo(equiposOrdenados.getDato(i).getNombre());
+    }
+    
+    return listaEquipos;
+}
+
+Lista<std::string> BaseDeDatos::obtenerTodasLasCompeticiones() const {
+    Lista<std::string> listaCompeticiones;
+    Lista<Competicion> competicionesOrdenadas = competiciones.obtenerElementos();
+    
+    // Set para evitar duplicados
+    std::set<std::string> competicionesUnicas;
+    
+    for(int i = 0; i < competicionesOrdenadas.getTamanio(); i++) {
+        const std::string& nombreComp = competicionesOrdenadas.getDato(i).getNombre();
+        // Solo agregar si no está vacío y no contiene caracteres especiales
+        if(!nombreComp.empty() && nombreComp.find(',') == std::string::npos) {
+            competicionesUnicas.insert(nombreComp);
+        }
+    }
+    
+    // Convertir el set a lista
+    for(const auto& comp : competicionesUnicas) {
+        listaCompeticiones.insertarUltimo(comp);
+    }
+    
+    return listaCompeticiones;
+}
+
+ListaDoble<Partido> BaseDeDatos::obtenerPartidosPorEquipo(const std::string& nombreEquipo) const {
+    ListaDoble<Partido> partidosEquipo;
+    
+    for(int i = 0; i < partidos.getTamanio(); i++) {
+        const Partido& partido = partidos.getDato(i);
+        if(partido.getEquipoLocal() == nombreEquipo || 
+           partido.getEquipoVisitante() == nombreEquipo) {
+            partidosEquipo.insertarUltimo(partido);
+        }
+    }
+    
+    return partidosEquipo;
+}
+
+ListaDoble<Partido> BaseDeDatos::obtenerPartidosPorCompeticion(const std::string& competicion) const {
+    ListaDoble<Partido> partidosCompeticion;
+    
+    for(int i = 0; i < partidos.getTamanio(); i++) {
+        const Partido& partido = partidos.getDato(i);
+        if(partido.getCompeticion() == competicion) {
+            partidosCompeticion.insertarUltimo(partido);
+        }
+    }
+    
+    return partidosCompeticion;
+}
+
+bool BaseDeDatos::agregarPartido(const Partido& partido) {
+    try {
+        // Verificar que los equipos existan o crearlos
+        try {
+            equipos.put(Equipo(partido.getEquipoLocal()));
+            equipos.put(Equipo(partido.getEquipoVisitante()));
+        } catch (...) {}
+
+        // Verificar que la competición exista o crearla
+        try {
+            competiciones.put(Competicion(partido.getCompeticion()));
+        } catch (...) {}
+
+        // Agregar el partido
+        partidos.insertarUltimo(partido);
         return true;
     } catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Error al agregar partido: " << e.what() << "\n";
         return false;
     }
 }
 
-std::vector<Partido> BaseDeDatos::obtenerPartidosConMasGoles() {
-    std::vector<Partido> partidosConMasGoles = partidos;
-    std::sort(partidosConMasGoles.begin(), partidosConMasGoles.end(), [](const Partido& a, const Partido& b) {
-        return (a.getGolesLocal() + a.getGolesVisitante()) > (b.getGolesLocal() + b.getGolesVisitante());
-    });
-
-    if (partidosConMasGoles.size() > 5) {
-        partidosConMasGoles.resize(5);
-    }
-
-    return partidosConMasGoles;
-}
-
-std::pair<int, int> BaseDeDatos::obtenerGolesTotalesPorEquipo(const std::string& nombreEquipo) {
-    int golesFavor = 0, golesContra = 0;
-    for (const auto& partido : partidos) {
-        if (partido.getEquipoLocal() == nombreEquipo) {
-            golesFavor += partido.getGolesLocal();
-            golesContra += partido.getGolesVisitante();
-        } else if (partido.getEquipoVisitante() == nombreEquipo) {
-            golesFavor += partido.getGolesVisitante();
-            golesContra += partido.getGolesLocal();
+bool BaseDeDatos::modificarPartido(const std::string& fecha, const std::string& equipoLocal,
+                                 const std::string& equipoVisitante, int nuevosGolesLocal,
+                                 int nuevosGolesVisitante) {
+    for(int i = 0; i < partidos.getTamanio(); i++) {
+        const Partido& partido = partidos.getDato(i);
+        if(partido.getFecha() == fecha &&
+           partido.getEquipoLocal() == equipoLocal &&
+           partido.getEquipoVisitante() == equipoVisitante) {
+            // Crear nuevo partido con los datos actualizados
+            Partido partidoModificado(fecha, equipoLocal, nuevosGolesLocal,
+                                    nuevosGolesVisitante, equipoVisitante,
+                                    partido.getCompeticion());
+            partidos.reemplazar(i, partidoModificado);
+            return true;
         }
     }
-    return {golesFavor, golesContra};
+    return false;
 }
 
-std::pair<double, double> BaseDeDatos::obtenerPromedioGolesPorEquipo(const std::string& nombreEquipo) {
-    int golesFavor = 0, golesContra = 0, partidosJugados = 0;
-    for (const auto& partido : partidos) {
-        if (partido.getEquipoLocal() == nombreEquipo || partido.getEquipoVisitante() == nombreEquipo) {
-            partidosJugados++;
-            if (partido.getEquipoLocal() == nombreEquipo) {
-                golesFavor += partido.getGolesLocal();
-                golesContra += partido.getGolesVisitante();
-            } else {
-                golesFavor += partido.getGolesVisitante();
-                golesContra += partido.getGolesLocal();
-            }
+bool BaseDeDatos::eliminarPartido(const std::string& fecha, const std::string& equipoLocal,
+                                const std::string& equipoVisitante) {
+    for(int i = 0; i < partidos.getTamanio(); i++) {
+        const Partido& partido = partidos.getDato(i);
+        if(partido.getFecha() == fecha &&
+           partido.getEquipoLocal() == equipoLocal &&
+           partido.getEquipoVisitante() == equipoVisitante) {
+            partidos.remover(i);
+            return true;
         }
     }
-    if (partidosJugados == 0) return {0.0, 0.0};
-    return {static_cast<double>(golesFavor) / partidosJugados, static_cast<double>(golesContra) / partidosJugados};
+    return false;
 }
 
-std::pair<int, int> BaseDeDatos::obtenerDerrotasYTriunfosPorEquipo(const std::string& nombreEquipo) {
-    int derrotas = 0, triunfos = 0;
-    for (const auto& partido : partidos) {
-        if (partido.getEquipoLocal() == nombreEquipo) {
-            if (partido.getGolesLocal() > partido.getGolesVisitante()) {
-                triunfos++;
-            } else if (partido.getGolesLocal() < partido.getGolesVisitante()) {
-                derrotas++;
-            }
-        } else if (partido.getEquipoVisitante() == nombreEquipo) {
-            if (partido.getGolesVisitante() > partido.getGolesLocal()) {
-                triunfos++;
-            } else if (partido.getGolesVisitante() < partido.getGolesLocal()) {
-                derrotas++;
-            }
-        }
-    }
-    return {derrotas, triunfos};
-}
-
-std::pair<std::string, std::string> BaseDeDatos::obtenerFechasConMasYMenosGoles(const std::string& nombreEquipo) {
-    std::string fechaMasGoles, fechaMenosGoles;
-    int maxGoles = -1, minGoles = INT_MAX;
-    for (const auto& partido : partidos) {
-        int goles = 0;
-        if (partido.getEquipoLocal() == nombreEquipo) {
-            goles = partido.getGolesLocal() + partido.getGolesVisitante();
-        } else if (partido.getEquipoVisitante() == nombreEquipo) {
-            goles = partido.getGolesVisitante() + partido.getGolesLocal();
-        }
-        if (goles > maxGoles) {
-            maxGoles = goles;
-            fechaMasGoles = partido.getFecha();
-        }
-        if (goles < minGoles) {
-            minGoles = goles;
-            fechaMenosGoles = partido.getFecha();
-        }
-    }
-    return {fechaMasGoles, fechaMenosGoles};
-}
-
-std::string BaseDeDatos::obtenerCompeticionConMasGoles() {
-    std::unordered_map<std::string, int> golesPorCompeticion;
-    for (const auto& partido : partidos) {
-        golesPorCompeticion[partido.getCompeticion()] += partido.getGolesLocal() + partido.getGolesVisitante();
-    }
-    return std::max_element(golesPorCompeticion.begin(), golesPorCompeticion.end(),
-                            [](const auto& a, const auto& b) { return a.second < b.second; })->first;
-}
-
-std::pair<std::string, std::string> BaseDeDatos::obtenerEquipoConMasYMenosGoles() {
-    std::unordered_map<std::string, int> golesPorEquipo;
-    for (const auto& partido : partidos) {
-        golesPorEquipo[partido.getEquipoLocal()] += partido.getGolesLocal();
-        golesPorEquipo[partido.getEquipoVisitante()] += partido.getGolesVisitante();
-    }
-    auto maxEquipo = std::max_element(golesPorEquipo.begin(), golesPorEquipo.end(),
-                                      [](const auto& a, const auto& b) { return a.second < b.second; });
-    auto minEquipo = std::min_element(golesPorEquipo.begin(), golesPorEquipo.end(),
-                                      [](const auto& a, const auto& b) { return a.second < b.second; });
-    return {maxEquipo->first, minEquipo->first};
-}
-
-std::vector<Partido> BaseDeDatos::obtenerResultadosEquipoFechas(const std::string& nombreEquipo, const std::string& fechaInicio, const std::string& fechaFin) {
-    std::vector<Partido> resultados;
-    for (const auto& partido : partidos) {
-        if (partido.getFecha() >= fechaInicio && partido.getFecha() <= fechaFin &&
-            (partido.getEquipoLocal() == nombreEquipo || partido.getEquipoVisitante() == nombreEquipo)) {
-            resultados.push_back(partido);
-        }
-    }
-    return resultados;
-}
-
-std::pair<std::pair<int, int>, std::pair<int, int>> BaseDeDatos::compararRendimientoGeneral(const std::string& equipo1, const std::string& equipo2) {
-    auto golesEquipo1 = obtenerGolesTotalesPorEquipo(equipo1);
-    auto golesEquipo2 = obtenerGolesTotalesPorEquipo(equipo2);
-    return {golesEquipo1, golesEquipo2};
-}
-
-std::pair<int, int> BaseDeDatos::compararRendimientoParticular(const std::string& equipo1, const std::string& equipo2) {
-    int partidosJugados = 0, empates = 0;
-    for (const auto& partido : partidos) {
-        if ((partido.getEquipoLocal() == equipo1 && partido.getEquipoVisitante() == equipo2) ||
-            (partido.getEquipoLocal() == equipo2 && partido.getEquipoVisitante() == equipo1)) {
-            partidosJugados++;
-            if (partido.getGolesLocal() == partido.getGolesVisitante()) {
-                empates++;
-            }
-        }
-    }
-    return {partidosJugados, empates};
-}
-
-std::vector<Equipo> BaseDeDatos::filtrarEquiposPorUmbral(int umbral, bool porEncima) {
-    std::vector<Equipo> equiposFiltrados;
-    for (const auto& equipo : equipos) {
-        double promedioGoles = equipo.getPromedioGoles();
-        if ((porEncima && promedioGoles > umbral) || (!porEncima && promedioGoles < umbral)) {
-            equiposFiltrados.push_back(equipo);
-        }
-    }
-    return equiposFiltrados;
-}
+// ... resto de implementaciones ...

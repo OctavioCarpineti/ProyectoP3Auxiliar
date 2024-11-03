@@ -2,20 +2,31 @@
 #define EQUIPO_H
 
 #include <string>
-#include <list>
 #include "Partido.h"
+#include "Listas/Lista.h"
+#include "Listas/ListaDoble.h"
 
 class Equipo {
 private:
     std::string nombre;
-    std::list<Partido> partidos; // Usamos std::list para almacenar los partidos
+    ListaDoble<Partido> partidos;
 
 public:
-    Equipo(const std::string& nombre);
+    explicit Equipo(const std::string& nombre);
     const std::string& getNombre() const;
-    void listarPartidos() const;
-    void agregarPartido(const std::string& fecha, const std::string& oponente, int golesFavor, int golesContra, const std::string& competicion);
-    double getPromedioGoles() const; // Nuevo método para obtener el promedio de goles
+    void agregarPartido(const Partido& partido);
+    const ListaDoble<Partido>& getPartidos() const;
+    
+    // Operadores necesarios para el árbol
+    bool operator<(const Equipo& otro) const { return nombre < otro.nombre; }
+    bool operator>(const Equipo& otro) const { return nombre > otro.nombre; }
+    bool operator==(const Equipo& otro) const { return nombre == otro.nombre; }
+    
+    // Métodos para estadísticas
+    std::pair<int, int> obtenerGolesTotales() const;
+    std::pair<double, double> obtenerPromedioGoles() const;
+    std::pair<int, int> obtenerDerrotasYTriunfos() const;
+    std::pair<std::string, std::string> obtenerFechasExtremas() const;
 };
 
 #endif // EQUIPO_H

@@ -1,6 +1,15 @@
+//
+// Created by Octavio Carpineti on 17/10/2024.
+//
+
+#ifndef PROYECTO_LISTA_H
+#define PROYECTO_LISTA_H
+
 #ifndef U02_LISTAS_LISTA_LISTA_H_
 #define U02_LISTAS_LISTA_LISTA_H_
 #include "Nodo.h"
+#include <iostream>
+#include <stdexcept>
 
 /**
  * Clase que implementa una Lista Enlasada generica, ya que puede
@@ -10,6 +19,7 @@
 template <class T> class Lista {
 private:
     Nodo<T> *inicio;
+    int tam;
 
 public:
     Lista();
@@ -43,14 +53,14 @@ public:
  * Constructor de la clase Lista
  * @tparam T
  */
-template <class T> Lista<T>::Lista() { inicio = nullptr; }
+template <class T> Lista<T>::Lista() { inicio = nullptr; tam = 0; }
 
 /**
  * Constructor por copia de la clase Lista
  * @tparam T
  * @param li
  */
-template <class T> Lista<T>::Lista(const Lista<T> &li) { inicio = li.inicio; }
+template <class T> Lista<T>::Lista(const Lista<T> &li) { inicio = li.inicio; tam = li.tam; }
 
 /**
  * Destructor de la clase Lista, se encarga de liberar la memoria de todos los
@@ -127,22 +137,20 @@ template <class T> void Lista<T>::insertarPrimero(T dato) { insertar(0, dato); }
  * @param dato dato a insertar
  */
 template <class T> void Lista<T>::insertarUltimo(T dato) {
-    Nodo<T> *aux = inicio, *nuevo;
-    nuevo = new Nodo<T>;
-    nuevo->setDato(dato);
-
-    if (aux == nullptr) {
-        nuevo->setSiguiente(inicio);
+    Nodo<T> *nuevo = new Nodo<T>(dato);
+    
+    if (inicio == nullptr) {
         inicio = nuevo;
         return;
     }
-
+    
+    Nodo<T> *aux = inicio;
     while (aux->getSiguiente() != nullptr) {
         aux = aux->getSiguiente();
     }
-
-    nuevo->setSiguiente(aux->getSiguiente());
+    
     aux->setSiguiente(nuevo);
+    nuevo->setAnterior(aux);
 }
 
 /**
@@ -249,3 +257,5 @@ void Lista<T>::print() {
 }
 
 #endif // U02_LISTAS_LISTA_LISTA_H_
+
+#endif //PROYECTO_LISTA_H
